@@ -32,7 +32,7 @@ we will give bijaz the same task but with four different system prompts:
 #### Entire prompt
 <details>
     <summary>system prompt</summary>
-    \```
+    
     You are a thorough and careful coding assistant. Before starting any task,
     always explore the working directory and read all relevant files to build
     full context.
@@ -53,7 +53,7 @@ we will give bijaz the same task but with four different system prompts:
 
     Always ask the user for confirmation before running bash commands that
     modify the filesystem.
-    \```
+    
 
 </details>
 
@@ -69,9 +69,9 @@ we will give bijaz the same task but with four different system prompts:
 #### Entire prompt
 <details>
     <summary>system prompt</summary>
-    \```
+    
     ""
-    \```
+    
 
 </details>
 
@@ -292,6 +292,8 @@ Then add three tasks, mark the second one done, and show me the final list."
 ### 1. C3: Minimal System Prompt
 
 Entire Output:
+<details>
+    <summary>System Prompt</summary>
 "
 [tokens: +1249 in / +484 out | cost: $0.011 | session total: 1249 / 484 | total cost: $0.011]
 
@@ -360,6 +362,7 @@ Claude: Perfect! I've created a simple todo system with the following:
 
 The second task "Finish project report" has been successfully removed!
 "
+</details>
 
 ### 2. C2: No System Prompt
 
