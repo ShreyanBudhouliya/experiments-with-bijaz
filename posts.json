@@ -1,0 +1,20 @@
+[
+  {
+    "number": 1,
+    "title": "building our own agent",
+    "date": "25.02.2026",
+    "file": "01-building-my-own-agent.md"
+  },
+  {
+    "number": 2,
+    "title": "testing how much difference does a system prompt make",
+    "date": "01.03.2026",
+    "file": "02-different-system-prompts.md"
+  },
+  {
+    "number": 3,
+    "title": "why is token usage so high",
+    "date": "27.02.2026",
+    "file": "03-token-usage.md"
+  }
+]

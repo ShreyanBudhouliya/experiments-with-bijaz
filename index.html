@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>experiments with bijaz</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Roboto+Mono:ital,wght@0,400;0,600;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                background-color: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            .card {
+                background: #fff;
+                width: 100%;
+                max-width: 700px;
+                min-height: 100vh;
+                padding: 0 48px 25px;
+                display: flex;
+                flex-direction: column;
+            }
+            /* ---- add a line to website: "bijaz is a coding agent created by
+            rishabh and shreyan." ---- */
+
+            /* ---- site logo ---- */
+
+            .site-logo {
+                display: block;
+                text-align: center;
+                text-decoration: none;
+            }
+
+            .header-img {
+                width: 470px;
+                max-width: 100%;
+            }
+
+            /* ---- fallback heading (shown if image fails to load) ---- */
+
+            .header-fallback {
+                text-align: center;
+                line-height: 1;
+            }
+
+            .header-fallback .line1 {
+                font-family: "Nanum Pen Script", cursive;
+                font-size: 58px;
+                color: #000;
+                display: block;
+            }
+
+            .header-fallback .line2 {
+                font-family: "Nanum Pen Script", cursive;
+                font-size: 44px;
+                color: #000;
+                display: block;
+                margin-left: 60px;
+            }
+
+            /* ---- homepage ---- */
+
+            .homepage-header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 5px;
+            }
+
+            .bijaz-quote {
+                font-family: "Roboto Mono", monospace;
+                font-style: italic;
+                color: #666;
+                font-size: 14px;
+                line-height: 1.65;
+                text-align: center;
+                margin-top: auto;
+                padding-top: 32px;
+                max-width: 560px;
+                width: 100%;
+                align-self: center;
+            }
+
+            /* ---- post list ---- */
+
+            .post-list {
+                margin-top: 200px;
+                /* margin-bottom: 180px;*/
+            }
+
+            .post-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                padding: 16px 0;
+                border-top: 1px solid #ddd;
+                text-decoration: none;
+                color: #000;
+                font-family: "Roboto Mono", monospace;
+                font-size: 14px;
+                cursor: pointer;
+                transition: opacity 0.15s;
+            }
+
+            .post-row:hover {
+                opacity: 0.5;
+            }
+
+            .post-row-title {
+                flex: 1;
+                padding-right: 24px;
+            }
+
+            .post-row-date {
+                color: #999;
+                white-space: nowrap;
+            }
+
+            /* ---- post page ---- */
+
+            .post-page-header {
+                padding-top: 48px;
+                text-align: center;
+                margin-bottom: 40px;
+            }
+
+            .back-link {
+                display: inline-block;
+                font-family: "Roboto Mono", monospace;
+                font-size: 13px;
+                color: #999;
+                text-decoration: none;
+                cursor: pointer;
+                margin-bottom: 20px;
+                transition: opacity 0.15s;
+            }
+
+            .back-link:hover {
+                opacity: 0.6;
+            }
+
+            .post-heading {
+                font-family: "Roboto Mono", monospace;
+                font-size: 16px;
+                font-weight: 600;
+                color: #000;
+                margin-bottom: 8px;
+            }
+
+            .post-meta-date {
+                font-family: "Roboto Mono", monospace;
+                font-size: 13px;
+                color: #999;
+                margin-bottom: 24px;
+            }
+
+            .post-divider {
+                border: none;
+                border-top: 1px solid #ddd;
+                margin-bottom: 36px;
+            }
+
+            /* ---- post content (rendered markdown) ---- */
+
+            .post-content {
+                font-family: "Roboto Mono", monospace;
+                font-size: 14px;
+                line-height: 1.7;
+                color: #000;
+            }
+
+            /* headings */
+
+            .post-content h1,
+            .post-content h2,
+            .post-content h3,
+            .post-content h4 {
+                font-family: "Roboto Mono", monospace;
+                font-weight: 600;
+                line-height: 1.3;
+                color: #000;
+            }
+
+            .post-content h1 {
+                font-size: 22px;
+                margin: 2em 0 0.75em;
+            }
+
+            .post-content h2 {
+                font-size: 18px;
+                margin: 1.8em 0 0.65em;
+            }
+
+            .post-content h3 {
+                font-size: 16px;
+                margin: 1.5em 0 0.55em;
+            }
+
+            .post-content h4 {
+                font-size: 14px;
+                margin: 1.4em 0 0.5em;
+            }
+
+            /* paragraphs */
+
+            .post-content p {
+                margin-bottom: 1.3em;
+                line-height: 1.7;
+            }
+
+            /* lists */
+
+            .post-content ul,
+            .post-content ol {
+                padding-left: 2em;
+                margin-bottom: 1.3em;
+            }
+
+            .post-content ol {
+                list-style: decimal;
+            }
+
+            .post-content ul {
+                list-style: disc;
+            }
+
+            .post-content li {
+                margin-bottom: 0.5em;
+                line-height: 1.7;
+            }
+
+            .post-content li:last-child {
+                margin-bottom: 0;
+            }
+
+            .post-content li > p {
+                margin-bottom: 0;
+            }
+
+            .post-content li > ul,
+            .post-content li > ol {
+                padding-left: 2em;
+                margin-top: 0.4em;
+                margin-bottom: 0;
+            }
+
+            /* inline formatting */
+
+            .post-content strong {
+                font-weight: 600;
+            }
+
+            .post-content em {
+                font-style: italic;
+            }
+
+            /* links */
+
+            .post-content a {
+                color: #000;
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+
+            .post-content a:hover {
+                opacity: 0.6;
+            }
+
+            /* code */
+
+            .post-content pre {
+                background: #f5f5f5;
+                padding: 16px;
+                overflow-x: auto;
+                margin: 1.5em 0;
+                font-size: 13px;
+            }
+
+            .post-content code {
+                background: #f0f0f0;
+                padding: 2px 5px;
+                font-family: "Roboto Mono", monospace;
+                font-size: 13px;
+            }
+
+            .post-content pre code {
+                background: none;
+                padding: 0;
+            }
+
+            /* blockquotes */
+
+            .post-content blockquote {
+                border-left: 3px solid #ddd;
+                margin: 1.5em 0;
+                padding: 0.5em 0 0.5em 1.2em;
+                color: #555;
+            }
+
+            .post-content blockquote p {
+                margin-bottom: 0;
+            }
+
+            /* tables */
+
+            .post-content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1.5em 0;
+                font-size: 13px;
+                display: block;
+                overflow-x: auto;
+            }
+
+            .post-content th,
+            .post-content td {
+                border: 1px solid #ddd;
+                padding: 8px 12px;
+                text-align: left;
+            }
+
+            .post-content th {
+                background: #f5f5f5;
+                font-weight: 600;
+            }
+
+            .post-content tr:nth-child(even) td {
+                background: #fafafa;
+            }
+
+            /* images */
+
+            .post-content img {
+                max-width: 100%;
+                display: block;
+                margin: 1.5em 0;
+            }
+
+            /* horizontal rule */
+
+            .post-content hr {
+                border: none;
+                border-top: 1px solid #ddd;
+                margin: 2em 0;
+            }
+
+            /* ---- not found ---- */
+
+            .not-found {
+                font-family: "Roboto Mono", monospace;
+                font-size: 14px;
+                color: #999;
+                padding: 40px 0;
+            }
+
+            /* ---- mobile ---- */
+
+            @media (max-width: 600px) {
+                .card {
+                    padding: 0 24px 20px;
+                }
+
+                .header-img {
+                    width: 300px;
+                }
+
+                .header-fallback .line1 {
+                    font-size: 42px;
+                }
+
+                .header-fallback .line2 {
+                    font-size: 32px;
+                    margin-left: 40px;
+                }
+
+                .homepage-header {
+                    padding-top: 16px;
+                }
+
+                .bijaz-quote {
+                    font-size: 11.5px;
+                }
+
+                .post-row {
+                    font-size: 13px;
+                }
+
+                .post-page-header {
+                    padding-top: 36px;
+                    margin-bottom: 28px;
+                }
+
+                .post-content {
+                    font-size: 12px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script>
+            let posts = [];
+
+            async function loadPosts() {
+                const res = await fetch("posts.json");
+                posts = await res.json();
+            }
+
+            function logoHTML() {
+                return `
+        <a href="#" class="site-logo">
+          <img
+            src="images/header-title.png"
+            alt="experiments with bijaz"
+            class="header-img"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
+          >
+          <div class="header-fallback" style="display:none">
+            <span class="line1">experiments</span>
+            <span class="line2">with bijaz</span>
+          </div>
+        </a>
+      `;
+            }
+
+            function renderHomepage() {
+                const sorted = [...posts].sort((a, b) => b.number - a.number);
+
+                const rows = sorted
+                    .map(
+                        (p) => `
+        <a class="post-row" href="#post/${p.number}">
+          <span class="post-row-title">${p.number}. ${p.title}</span>
+          <span class="post-row-date">${p.date}</span>
+        </a>
+      `,
+                    )
+                    .join("");
+
+                return `
+        <div class="card">
+          <div class="homepage-header">
+            ${logoHTML()}
+          </div>
+          <div class="post-list">
+            ${rows}
+          </div>
+          <p class="bijaz-quote">"i don't speak", bijaz said. "i operate a machine called language. it creaks and groans, but is mine own."</p>
+        </div>
+      `;
+            }
+
+            async function renderPost(number) {
+                const post = posts.find((p) => p.number === number);
+
+                const header = `
+        <div class="post-page-header">
+          ${logoHTML()}
+        </div>
+      `;
+
+                if (!post) {
+                    return `<div class="card">${header}<p class="not-found">post not found.</p></div>`;
+                }
+
+                let contentHTML = "";
+                try {
+                    const res = await fetch(`posts/${post.file}`);
+                    if (!res.ok) throw new Error("not found");
+                    const md = await res.text();
+                    contentHTML =
+                        typeof marked !== "undefined"
+                            ? marked.parse(md)
+                            : `<pre>${md}</pre>`;
+                } catch (e) {
+                    contentHTML = '<p class="not-found">post not found.</p>';
+                }
+
+                return `
+        <div class="card">
+          ${header}
+          <a href="#" class="back-link">← back</a>
+          <div class="post-heading">${post.number}. ${post.title}</div>
+          <div class="post-meta-date">${post.date}</div>
+          <hr class="post-divider">
+          <div class="post-content">${contentHTML}</div>
+        </div>
+      `;
+            }
+
+            async function route() {
+                const hash = window.location.hash;
+                const app = document.getElementById("app");
+                const match = hash.match(/^#post\/(\d+)$/);
+
+                if (match) {
+                    app.innerHTML = await renderPost(parseInt(match[1], 10));
+                } else {
+                    app.innerHTML = renderHomepage();
+                }
+
+                window.scrollTo(0, 0);
+            }
+
+            (async () => {
+                await loadPosts();
+                await route();
+                window.addEventListener("hashchange", route);
+            })();
+        </script>
+    </body>
+</html>
