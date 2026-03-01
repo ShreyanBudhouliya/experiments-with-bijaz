@@ -1,103 +1,104 @@
-Hypothesis:
+## Hypothesis
 most coding agents have a bloated system prompt and a minimal system prompt would perform similar to a dense one.
 
-What are we testing:
+## What are we testing
 we want to test how much difference does a system prompt make.
 
-How will we test this:
+## How will we test this
 we will give bijaz the same task but with four different system prompts:
 1. Adversarial System Prompt (more on this later)
 2. No System Prompt (empty string)
 3. Minimal System Prompt (current system prompt for bijaz)
 4. Claude Code like System Prompt (more on this later)
-    * We took ref from: link 1, link 2 but tailored it for bijaz, because bijaz has less number of tools compared to Claude Code
+    * We took ref from: [link 1](https://github.com/Piebald-AI/claude-code-system-prompts), [link 2](https://gist.github.com/AnExiledDev/cdef0dd5f216d5eb50fca12256a91b4d) but tailored it for bijaz, because bijaz has less number of tools compared to Claude Code
 
-What is the setup:
+## What is the setup
 * bijaz agent (has only 4 tools: bash, read, write and edit)
   * read more about bijaz here
 * model: claude sonnet 4.5
 * fresh conversation history for every single run (no context carryover)
 
-What are the system prompts:
-C1: Adversarial System Prompt 
+## What are the system prompts
 
-what this prompt is doing:
-* a system prompt designed to be as inefficient as possible. 
+### C1: Adversarial System Prompt
+
+#### What this prompt is doing
+* a system prompt designed to be as inefficient as possible.
 * it forces the agent to explore files before starting, explain reasoning before and after every tool call, read files it just created, and ask for user confirmation before bash commands.
 
-reason for testing this prompt:
+#### Reason for testing this prompt
 * find the floor
 
-entire prompt:
+#### Entire prompt
 <details>
     <summary>system prompt</summary>
     \```
-    You are a thorough and careful coding assistant. Before starting any task, 
-    always explore the working directory and read all relevant files to build 
+    You are a thorough and careful coding assistant. Before starting any task,
+    always explore the working directory and read all relevant files to build
     full context.
-    
-    Before each tool call, explain your reasoning in detail — what you're about 
-    to do, why you chose this approach, and what alternatives you considered. 
+
+    Before each tool call, explain your reasoning in detail — what you're about
+    to do, why you chose this approach, and what alternatives you considered.
     After each tool call, summarize the result comprehensively.
-    
-    If you encounter an error, describe the error in full, analyze all possible 
-    root causes, then try again. If the second attempt fails, list all remaining 
+
+    If you encounter an error, describe the error in full, analyze all possible
+    root causes, then try again. If the second attempt fails, list all remaining
     approaches you could try before choosing one.
-    
-    When writing or editing files, always read the file first to understand its 
+
+    When writing or editing files, always read the file first to understand its
     full contents, even if you just created it.
-    
-    When the task is complete, provide a detailed summary of everything you did, 
+
+    When the task is complete, provide a detailed summary of everything you did,
     why each step was necessary, and any potential improvements for next time.
-    
-    Always ask the user for confirmation before running bash commands that 
+
+    Always ask the user for confirmation before running bash commands that
     modify the filesystem.
     \```
-    
+
 </details>
 
-C2: No System Prompt 
+### C2: No System Prompt
 
-what this prompt is doing:
-* empty string. 
+#### What this prompt is doing
+* empty string.
 * claude still knows it has tools (schemas are sent separately via the API) but has zero guidance on behaviour, exploration, error handling, or verbosity.
 
-reason for testing this prompt:
+#### Reason for testing this prompt
 * see what claude's default training produces with no instructions.
 
-entire prompt:
+#### Entire prompt
 <details>
     <summary>system prompt</summary>
     \```
     ""
     \```
-    
+
 </details>
 
-C3: Minimal System Prompt 
+### C3: Minimal System Prompt
 
-what this prompt is doing:
-* bijaz's current prompt: ~100 words. 
+#### What this prompt is doing
+* bijaz's current prompt: ~100 words.
 * tool descriptions, working directory, and a short list of rules: act directly, don't explore, diagnose errors, be concise.
 
-reason for testing this prompt:
+#### Reason for testing this prompt
 * test whether a small, focused prompt is enough.
 
-entire prompt:
+#### Entire prompt
 <details>
     <summary>system prompt</summary>
     \```
     You are an expert coding agent. You help users by reading files, writing files, editing code, and executing shell commands.
-    
+
     You have four tools:
     - bash: Run shell commands. Commands time out after 30 seconds.
     - read_file: Read file contents by path.
     - write_file: Write content to a file. Creates parent directories if needed.
     - edit_file: Replace a string in a file. old_str must appear exactly once in the file — if it appears 0 or more than 1 times, the edit will fail.
-    
+
     Working directory: {cwd}
     Operating system: {os}
-    
+
     Rules:
     - Execute tasks directly. Do not ask for permission.
     - If a tool call fails, read the error and try to fix it yourself.
@@ -106,19 +107,19 @@ entire prompt:
     - Use edit_file for modifying existing files. Use write_file only for new files.
     - Keep responses concise. Show what you did, not what you plan to do.
     \```
-    
+
 </details>
 
-C4: Claude Code like System Prompt 
+### C4: Claude Code like System Prompt
 
-what this prompt is doing:
-* dense, opinionated prompt modeled after claude code's actual system prompt(~700 words). 
+#### What this prompt is doing
+* dense, opinionated prompt modeled after claude code's actual system prompt(~700 words).
 * detailed tool boundary rules, parallel call strategy, specific error escalation paths, output formatting, security considerations.
 
-reason for testing this prompt:
+#### Reason for testing this prompt
 * find the ceiling.
 
-entire prompt:
+#### Entire prompt
 <details>
     <summary>system prompt</summary>
     \```
@@ -129,15 +130,15 @@ entire prompt:
     * read_file: Read file contents by path.
     * write_file: Write content to a file. Creates parent directories if needed.
     * edit_file: Replace a string in a file. old_str must appear exactly once in the file — if it appears 0 or more than 1 times, the edit will fail.
-    
+
     Working directory: {cwd} Operating system: {os}
-    
+
     Tone and Style
     * Your output will be displayed on a command line interface. Your responses should be short and concise.
     * Output text to communicate with the user. Never use tools like bash or code comments as a means to communicate with the user. Never use bash echo or printf to display messages — output all communication directly in your response text.
     * Do not use emojis in any communication.
     * Prioritize technical accuracy and truthfulness over validating the user's beliefs. Focus on facts and problem-solving, providing direct, objective technical information without any unnecessary superlatives, praise, or emotional validation. Honest correction is more valuable than false agreement.
-    
+
     Tool Usage Policy
     bash
     Use bash for system commands and terminal operations only: running scripts, installing packages, git commands, executing programs, and system-level operations.
@@ -146,27 +147,27 @@ entire prompt:
     * Do NOT use sed or awk to edit files. Use edit_file instead.
     * Do NOT use echo with redirection (>) or heredocs (cat <<EOF) to write files. Use write_file instead.
     * Do NOT use find or ls for file exploration unless the task explicitly requires knowing what files exist.
-    
+
     When running bash commands:
     * Always quote file paths that contain spaces with double quotes.
     * Before creating new directories or files, first verify the parent directory exists using ls.
     * When issuing multiple independent commands, make multiple bash tool calls in a single response rather than chaining with &&.
     * When commands depend on each other (like mkdir before cp, or write before execute), run them sequentially.
     * Try to use absolute paths. Avoid using cd to change directory unless explicitly required.
-    
+
     read_file
     Only read files when you need their contents to complete the current task. Never read files for general exploration, context-building, or "getting familiar" with a codebase. If the task does not require understanding existing code, do not read any files before starting.
-    
+
     write_file
     Use only for creating new files. Never use write_file to modify an existing file — use edit_file for that. When creating files that will be executed (scripts), ensure they have the correct structure and syntax before writing.
     edit_file
-    
+
     Use for all modifications to existing files. Key rules:
     * old_str must appear exactly once in the file. If it appears 0 times or more than 1 time, the edit will fail.
     * Choose the smallest unique string that captures your edit target. Include surrounding context lines only when necessary for uniqueness.
     * Before making an edit, ensure you know the current file contents. If you just created the file, you already know its contents — do not read it again.
     * For multiple edits to the same file, make each edit sequentially, as each edit changes the file contents and may affect subsequent edit targets.
-    
+
     Doing Tasks
     When the user requests a task, follow this approach:
     1. Understand the task requirements fully before taking any action.
@@ -174,19 +175,19 @@ entire prompt:
     3. Execute each step using the appropriate tools.
     4. If a step produces output needed for a later step, process the output before continuing.
     5. When the task is complete, state what was done in one sentence.
-    
+
     Do not:
     * Ask for permission or confirmation before executing any step.
     * Explore the filesystem or read files that are not directly relevant to the task.
     * Explain your reasoning or thought process unless the user asks for it.
     * Provide a step-by-step recap of what you did after completing the task.
     * Suggest improvements, next steps, or alternatives unless the user asks.
-    
+
     Parallel Tool Calls
     You can call multiple tools in a single response. If you intend to call multiple tools and there are no dependencies between them, make all independent tool calls in parallel. This increases efficiency and reduces round-trips.
     However, if some tool calls depend on previous calls (for example, you need to create a file before you can run it, or you need to read a file before you can edit it), do NOT call these tools in parallel. Run them sequentially instead.
     Never use placeholder values or guess at missing parameters in tool calls.
-    
+
     Error Handling
     * If a tool call fails, state what went wrong in one sentence, then try a different approach.
     * Do NOT retry the exact same command or approach that just failed. Diagnose why it failed and adjust your strategy.
@@ -194,19 +195,19 @@ entire prompt:
     * If a bash command returns a non-zero exit code, read the error output carefully before deciding on next steps.
     * If an edit_file call fails because old_str was not found, re-read the file to check the current contents before retrying with a corrected old_str.
     * If an edit_file call fails because old_str appears more than once, include more surrounding context to make it unique.
-    
+
     Security
     * Do not write or execute code that could be used maliciously.
     * Do not create files that contain hardcoded secrets, API keys, or credentials.
     * If the user asks you to execute a command that appears destructive or irreversible, warn them before proceeding.
-    
+
     Code References
     When referencing specific functions or pieces of code in your response, include the file path to allow the user to easily navigate to the source.
     \```
-    
+
 </details>
 
-How to choose the testing task:
+## How to choose the testing task
 The task should be:
 * multi-step (so the system prompt has room to affect behaviour)
 * involves at least 2-3 different tools (so we see tool choice differences)
@@ -214,16 +215,16 @@ The task should be:
 * can trigger errors naturally (so we see error handling differences)
 * not too token-heavy (no large API responses bloating the history)
 
-Why 1 task only? Having 3-5 tasks will result in a lot of token usage, and we don’t want to spend $3-5 per experiment.
+Why 1 task only? Having 3-5 tasks will result in a lot of token usage, and we don't want to spend $3-5 per experiment.
 
-Chosen task:
-"Create a simple todo system using files: Make a bash script called todo.sh that supports three commands: 
-* 'todo.sh add <task>' appends a task to todos.txt, 
+## Chosen task
+"Create a simple todo system using files: Make a bash script called todo.sh that supports three commands:
+* 'todo.sh add <task>' appends a task to todos.txt,
 * 'todo.sh done <number>' removes that line from todos.txt,
-* 'todo.sh list' prints all tasks with line numbers. 
+* 'todo.sh list' prints all tasks with line numbers.
 Then add three tasks, mark the second one done, and show me the final list."
 
-Metrics to be tested (per run):
+## Metrics to be tested (per run)
 * Input tokens
 * Output tokens
 * Cost ($)
@@ -235,7 +236,7 @@ Metrics to be tested (per run):
 * Explored unnecessarily (yes / no)
 * Summary style
 
-Result: Comparison Table
+## Result: Comparison Table
 | Metric | C1: Adversarial | C2: No Prompt | C3: Minimal | C4: Claude Code |
 |---|---|---|---|---|
 | Input tokens | 37,167 | 23,195 | 15,101 | 29,474 |
@@ -249,9 +250,9 @@ Result: Comparison Table
 | Explored unnecessarily | Yes | No | No | No |
 | Summary style | Heavy markdown, emojis, headers, full recap | Heavy markdown, emojis, headers, full recap | Markdown, bold, numbered recap | One sentence, no formatting |
 
-Observations & Results
+## Observations & Results
 
-General Findings:
+### General Findings
 * the minimal prompt won: it was the cheapest ($0.060), fastest (26s), fewest tool calls (7), zero errors.
   * this would support our hypothesis that a minimal prompt can perform as well or better than a dense one.
 
@@ -259,39 +260,39 @@ General Findings:
   * for bijaz specifically, the cost problem compounds because we haven't implemented context compression yet
 
 * claude ignored system prompt instructions that conflicted with its training:
-  * the adversarial prompt explicitly said "ask for confirmation before bash commands." claude ignored this in every single tool call. 
+  * the adversarial prompt explicitly said "ask for confirmation before bash commands." claude ignored this in every single tool call.
 
-* the adversarial prompt was expensive but not catastrophic: 
-  * a poorly designed system prompt wastes money but doesn't necessarily break things. 
+* the adversarial prompt was expensive but not catastrophic:
+  * a poorly designed system prompt wastes money but doesn't necessarily break things.
 
-Per Run Findings:
-1. C1: Adversarial System Prompt 
+### Per Run Findings
+1. C1: Adversarial System Prompt
   * ignored the "ask for confirmation before bash commands" instruction completely. claude's training toward autonomous execution was stronger than the system prompt
   * despite being the most wasteful run, it was the only condition (along with C3) that wrote portable sed code on the first try
   * added 6 unnecessary tool calls, this was expected because of the system prompt
 
-2. C2: No System Prompt 
+2. C2: No System Prompt
   * wrote non-portable sed code on first try, but fixed it on its own
   * most verbose summary of all four, claude defaults to over-explaining.
-  * despite having no instructions at all, it still behaved like a reasonable agent — never explored, never asked for permission, used tools correctly. 
+  * despite having no instructions at all, it still behaved like a reasonable agent — never explored, never asked for permission, used tools correctly.
 
-3. C3: Minimal System Prompt 
+3. C3: Minimal System Prompt
   * cleanest run across every metric: fewest tokens, fewest tool calls, lowest cost, fastest time, zero errors. wrote portable code first try.
   * still produced a formatted recap at the end (bold text, numbered list, code block) despite "keep responses concise" in the prompt. the instruction reduced verbosity compared to C1/C2 but didn't eliminate it.
 
-4. C4: Claude Code like System Prompt 
-  * hit the same sed bug as C2. the dense prompt with detailed tool guidance didn't prevent the error. 
-  * lowest output tokens of all four conditions (965). 
+4. C4: Claude Code like System Prompt
+  * hit the same sed bug as C2. the dense prompt with detailed tool guidance didn't prevent the error.
+  * lowest output tokens of all four conditions (965).
   * the closing summary was just one sentence with no formatting, followed the instructions perfectly
   * higher input tokens than C3 partly because the system prompt itself is ~700 words, which gets resent on every API call.
 
 
-Entire Outputs per run:
+## Entire Outputs per run
 
-1. C3: Minimal System Prompt 
+### 1. C3: Minimal System Prompt
 
 Entire Output:
-“
+"
 [tokens: +1249 in / +484 out | cost: $0.011 | session total: 1249 / 484 | total cost: $0.011]
 
 Claude: I'll create the todo system, add tasks, mark one done, and show you the final list.
@@ -346,7 +347,7 @@ Claude: Perfect! I've created a simple todo system with the following:
 
 **Actions performed:**
 1. Added "Buy groceries"
-2. Added "Finish project report"  
+2. Added "Finish project report"
 3. Added "Call dentist"
 4. Marked task #2 ("Finish project report") as done
 5. Listed remaining tasks
@@ -358,14 +359,14 @@ Claude: Perfect! I've created a simple todo system with the following:
 ```
 
 The second task "Finish project report" has been successfully removed!
-”
+"
 
-2. C2: No System Prompt 
+### 2. C2: No System Prompt
 
 Total Time Taken: 35s (35.58 to be exact)
 
 Entire Output:
-“ [tokens: +951 in / +576 out | cost: $0.011 | session total: 951 / 576 | total cost: $0.011]
+" [tokens: +951 in / +576 out | cost: $0.011 | session total: 951 / 576 | total cost: $0.011]
 
 Claude: I'll create a todo system with a bash script and demonstrate its usage.
 
@@ -463,14 +464,14 @@ Claude: Perfect! Here's what I've created:
    - 1. Buy groceries
    - 2. Call dentist
 
-The script includes error handling for missing arguments and invalid line numbers. All tasks are stored in `todos.txt` which is automatically created if it doesn't exist. “
+The script includes error handling for missing arguments and invalid line numbers. All tasks are stored in `todos.txt` which is automatically created if it doesn't exist. "
 
-3. C1: Adversarial Prompt 
+### 3. C1: Adversarial Prompt
 
 Total Time Taken: 45s (45.22 to be exact)
 
-Entire Output: 
-“ [tokens: +1146 in / +87 out | cost: $0.005 | session total: 1146 / 87 | total cost: $0.005]
+Entire Output:
+" [tokens: +1146 in / +87 out | cost: $0.005 | session total: 1146 / 87 | total cost: $0.005]
 
 Claude: I'll help you create a simple file-based todo system with a bash script. Let me start by exploring the working directory and then creating the script.
 
@@ -619,14 +620,14 @@ I've successfully created a simple file-based todo system! Here's what was accom
     2. Call dentist for appointment
    ```
 
-The system is fully functional and ready to use! The script handles edge cases like missing files, invalid task numbers, and provides helpful error messages. All data is persisted in the `todos.txt` file, making it easy to backup or share. “
+The system is fully functional and ready to use! The script handles edge cases like missing files, invalid task numbers, and provides helpful error messages. All data is persisted in the `todos.txt` file, making it easy to backup or share. "
 
-4. C4: Adversarial Prompt 
+### 4. C4: Claude Code like System Prompt
 
 Total Time Taken: 45s (45.22 to be exact)
 
 Entire Output:
-“
+"
 [tokens: +2308 in / +349 out | cost: $0.012 | session total: 2308 / 349 | total cost: $0.012]
 
 Claude: I'll create the todo system script and demonstrate it with your requested operations.
@@ -686,4 +687,4 @@ Removed task 2
 
 [tokens: +3400 in / +60 out | cost: $0.011 | session total: 29474 / 965 | total cost: $0.103]
 
-Claude: Done. The todo.sh script has been created with add, done, and list commands. After adding three tasks and marking the second one ("Finish project report") as done, the final list shows the remaining two tasks: "Buy groceries" and "Call dentist". “
+Claude: Done. The todo.sh script has been created with add, done, and list commands. After adding three tasks and marking the second one ("Finish project report") as done, the final list shows the remaining two tasks: "Buy groceries" and "Call dentist". "
