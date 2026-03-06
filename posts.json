@@ -13,8 +13,14 @@
   },
   {
     "number": 3,
-    "title": "why is token usage so high",
+    "title": "can bijaz code itself a new tool?",
+    "date": "02.03.2026",
+    "file": "03-bijaz-codes-itself.md"
+  },
+  {
+    "number": 4,
+    "title": "why is the token usage so high",
     "date": "04.03.2026",
-    "file": "03-token-usage.md"
+    "file": "04-token-usage.md"
   }
 ]
