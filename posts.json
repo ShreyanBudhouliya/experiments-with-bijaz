@@ -20,7 +20,19 @@
   {
     "number": 4,
     "title": "why is the token usage so high",
-    "date": "04.03.2026",
+    "date": "06.03.2026",
     "file": "04-token-usage.md"
+  },
+  {
+    "number": 5,
+    "title": "reducing token usage",
+    "date": "08.03.2026",
+    "file": "05-reducing-token-usage.md"
+  },
+  {
+    "number": 6,
+    "title": "does bijaz have a consistent personality?",
+    "date": "10.03.2026",
+    "file": "06-consistent-personality-test.md"
   }
 ]

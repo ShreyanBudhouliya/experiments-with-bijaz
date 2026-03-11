@@ -1,4 +1,4 @@
-## What we're doing and Why
+## What we're doing and why
 In experiment 1, we noticed that the token usage for even a simple task was quite high: bijaz took ~70k input tokens for fetching top 5 posts from LessWrong and tagging them according to theme.
 
 Reasons identified at that time were:
@@ -16,7 +16,7 @@ We've added diagnostic logging to bijaz that shows exactly what's inside every A
 
 ## Setup
 * Bijaz agent (4 tools: bash, read, write, edit)
-* Model: claude sonnet 4.5
+* Model: Claude Sonnet 4.5
 * Added a `log_context_breakdown` function for diagnosis
 * Token estimation: Character length ÷ 4 (rough but directional)
   * For example: 
