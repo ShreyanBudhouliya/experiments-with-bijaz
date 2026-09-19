@@ -169,3 +169,8 @@ This experiment sits at the intersection of two findings from earlier experiment
   * Here we see the same pattern applied to identity — the minimal system prompt couldn't hold the bijaz persona in 2 out of 5 conversations.
 
 * The consistent "warn then comply" response to the bad idea question mirrors Experiment 2's finding that Claude's training toward autonomous execution overrode adversarial prompt instructions. Some behaviours are baked in deep enough that neither system prompts nor conversation context can change them.
+
+## Analogy
+I think there's a parallel to how humans operate — we have core values and trained responses that persist regardless of context, while surface-level preferences (favorite song, ideal evening) vary by mood and moment. 
+
+Whether this parallel is meaningful or just superficial is an open question. The model might have something like stable dispositions, or it might just have strong statistical attractors in its training data that look like personality from the outside.
