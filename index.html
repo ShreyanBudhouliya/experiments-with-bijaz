@@ -6,6 +6,7 @@
         <title>experiments with bijaz</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="icon" href="/main.ico" type="image/x-icon">
         <link
             href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Roboto+Mono:ital,wght@0,400;0,600;1,400&display=swap"
             rel="stylesheet"
@@ -37,9 +38,6 @@
                 display: flex;
                 flex-direction: column;
             }
-            /* ---- add a line to website: "bijaz is a coding agent created by
-            rishabh and shreyan." ---- */
-
             /* ---- site logo ---- */
 
             .site-logo {
@@ -51,6 +49,8 @@
             .header-img {
                 width: 470px;
                 max-width: 100%;
+                display: block;
+                margin: 0 auto;
             }
 
             /* ---- fallback heading (shown if image fails to load) ---- */
@@ -90,8 +90,8 @@
                 font-size: 14px;
                 text-align: center;
                 margin-top: auto;
-                padding-top: 32px;
-                margin-bottom: 12px;
+                padding-top: 70px;
+                margin-bottom: 5px;
                 max-width: 560px;
                 width: 100%;
                 align-self: center;
@@ -104,7 +104,7 @@
                 font-size: 13px;
                 line-height: 1.65;
                 text-align: center;
-                margin-top: 0;
+                margin-top: 0.5px;
                 padding-top: 0;
                 max-width: 560px;
                 width: 100%;
@@ -114,7 +114,7 @@
             /* ---- post list ---- */
 
             .post-list {
-                margin-top: 200px;
+                margin-top: 75px;
                 /* margin-bottom: 180px;*/
             }
 
@@ -404,7 +404,7 @@
                 }
 
                 .homepage-header {
-                    padding-top: 16px;
+                    padding-top: 5px;
                 }
 
                 .bijaz-description {
@@ -477,12 +477,12 @@
         <div class="card">
           <div class="homepage-header">
             ${logoHTML()}
+            <p class="bijaz-quote">"i don't speak", bijaz said. "i operate a machine called language. it creaks and groans, but is mine own."</p>
           </div>
           <div class="post-list">
             ${rows}
           </div>
-          <p class="bijaz-description">bijaz is a coding agent created by <a href="https://github.com/rishabhBudhouliya" target="_blank" style="color:inherit;text-decoration:underline;">rishabh</a> and <a href="https://github.com/ShreyanBudhouliya" target="_blank" style="color:inherit;text-decoration:underline;">shreyan</a>.</p>
-          <p class="bijaz-quote">~"i don't speak", bijaz said. "i operate a machine called language. it creaks and groans, but is mine own."</p>
+          <p class="bijaz-description">bijaz is a minimal coding agent created by <a href="https://github.com/ShreyanBudhouliya" target="_blank" style="color:inherit;text-decoration:underline;">shreyan</a>.</p>
         </div>
       `;
             }

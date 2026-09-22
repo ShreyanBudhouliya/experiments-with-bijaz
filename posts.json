@@ -34,5 +34,53 @@
     "title": "does bijaz have a consistent personality?",
     "date": "10.03.2026",
     "file": "06-consistent-personality-test.md"
+  },
+  {
+    "number": 7,
+    "title": "creating a multi-agent pipeline",
+    "date": "16.03.2026",
+    "file": "07-multi-agent-pipeline.md"
+  },
+  {
+    "number": 8,
+    "title": "trying to inject fault into agents",
+    "date": "24.03.2026",
+    "file": "08-injecting-faults.md"
+  },
+  {
+    "number": 9,
+    "title": "does it matter where in the pipeline a fault lands?",
+    "date": "01.04.2026",
+    "file": "09-where-the-fault-lands.md"
+  },
+  {
+    "number": 10,
+    "title": "can a second judge fix it?",
+    "date": "07.04.2026",
+    "file": "10-second-judge.md"
+  },
+  {
+    "number": 11,
+    "title": "can the pipeline tell you it's broken?",
+    "date": "14.04.2026",
+    "file": "11-detecting-degradation.md"
+  },
+  {
+    "number": 12,
+    "title": "blind trust",
+    "date": "21.04.2026",
+    "file": "12-blind-trust.md"
+  },
+  {
+    "number": 13,
+    "title": "reflection",
+    "date": "28.04.2026",
+    "file": "13-reflection.md"
+  },
+  {
+    "number": 14,
+    "title": "(update) this evolved into a research paper!",
+    "date": "20.08.2026",
+    "file": "14-research-paper.md"
   }
 ]
